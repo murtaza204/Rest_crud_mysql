@@ -1,1 +1,1 @@
-Spring Boot Rest mysl Crud
+Spring Boot mysl Rest Crud
