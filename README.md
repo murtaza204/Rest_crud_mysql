@@ -1,4 +1,4 @@
 Spring Boot mysl Rest Crud
 
-Data base:
-mysql you can also used any by changing the 
+Database:
+mysql you can also used any by changing the url at properties file and also add the driver dependencies at POM file.
