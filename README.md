@@ -1,7 +1,7 @@
-Spring Boot mysl Rest Crud
+Spring Boot mysql Rest Crud
 
 Database:
-mysql you can also used any by changing the url at properties file and also add the driver dependencies at POM file.
+I used mysql and it is changeable by changing the url at applicaiton.properties file and also add the dependencies at POM file.
 
 Database url:
 Change the database url and also username and password at application.properties file
