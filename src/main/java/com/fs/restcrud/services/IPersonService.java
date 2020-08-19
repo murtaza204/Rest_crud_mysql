@@ -5,6 +5,8 @@ package com.fs.restcrud.services;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 import com.fs.restcrud.entity.Person;
 
 /**
@@ -34,6 +36,21 @@ public interface IPersonService
 	 * This method is used to get all persons list from database.
 	 */
 	public List<Person> getAllPersons();
+	
+
+	/**
+	 * 
+	 * @param startindex
+	 * @param endindex
+	 * @return
+	 * 
+	 * This method is used to get pageable list
+	 */
+	
+	public Page<Person> getAllPagablePersons(int startindex, int endindex);
+	
+	
+	
 	/**
 	 * @author Ghulam Murtaza
 	 * @since Aug 12, 2020

@@ -12,6 +12,9 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fs.restcrud.entity.Person;
@@ -54,7 +57,15 @@ public class PersonServiceImp implements IPersonService{
 	public List<Person> getAllPersons() {
 		// TODO Auto-generated method stub
 		loger.info("get all pwerons list");
-		return personRepository.findAll();
+				return personRepository.findAll();
+	}
+	
+	@Override
+	public  Page<Person>  getAllPagablePersons(int startindex, int maxresult){
+		// TODO Auto-generated method stub
+		loger.info("get all pwerons list");
+		Pageable pagable = PageRequest.of(startindex, maxresult);
+		return personRepository.findAll(pagable);
 	}
 
 	@Override
@@ -99,6 +110,8 @@ public class PersonServiceImp implements IPersonService{
 		dbperson.setSex(person.getSex());
 		
 		personRepository.save(dbperson);
+		
+		
 		
 	}
 

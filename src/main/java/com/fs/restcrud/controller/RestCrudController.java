@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fs.restcrud.entity.Person;
 import com.fs.restcrud.services.IPersonService;
+import com.fs.restcrud.utils.TestStatic;
 
 /**
  * @author Ghulam Murtaza
@@ -38,11 +40,13 @@ public class RestCrudController {
 	@Autowired
 	private IPersonService iPersonService;
 	
+	private TestStatic testStatic=null;
+	
 	@RequestMapping(value = "/test", method = RequestMethod.GET)
 	public String test()
 	{
 		loger.info("test path");
-		return "fine here murtaza";
+		return testStatic.TESTSTRING;//"fine here murtaza";
 	}
 	
 	/**
@@ -115,6 +119,18 @@ public class RestCrudController {
 	{
 		loger.info("get Persons list");
 		return	iPersonService.getAllPersons();
+		
+	}
+	
+	@RequestMapping(value = "/personswithpage", method = RequestMethod.GET)
+	public Page<Person> getPersons(int startIdex, int maxresult)
+	{
+		loger.info("get Persons list");
+		
+		if(maxresult ==0)
+			maxresult=5;
+		
+		return	iPersonService.getAllPagablePersons(startIdex, maxresult);
 		
 	}
 	
