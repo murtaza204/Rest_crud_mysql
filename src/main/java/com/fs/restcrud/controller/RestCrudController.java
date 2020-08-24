@@ -2,18 +2,24 @@ package com.fs.restcrud.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.fs.restcrud.entity.Person;
 import com.fs.restcrud.services.IPersonService;
+import com.fs.restcrud.utils.ResponseStatus;
 import com.fs.restcrud.utils.TestStatic;
 
 /**
@@ -57,23 +63,28 @@ public class RestCrudController {
 	 */
 	
 	@RequestMapping(value = "/createperson", method = RequestMethod.POST)
-	public String createPerson(@RequestBody Person person)
+	public ResponseStatus createPerson(@Valid @RequestBody Person person)
 	{
 		loger.info("create new user");
+	
+		
 		if(person.getName().isEmpty() )
 		{
 			loger.info("user is empty");
-			return "Name is empty";
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Name is empty");
+			
 		}
 		else
 		if(person.getSurname().isEmpty())
 		{
 			loger.info("user sure name is empty");
-			return "sure Name is empty";
+			new ResponseStatus("sure Name is empty",404);
+			
 		}
 		
 		iPersonService.saveService(person);
-		return "Person created Sucessfully";
+		return new ResponseStatus("Person created Sucessfully",200);
+		
 	}
 	
 	/**
@@ -86,24 +97,26 @@ public class RestCrudController {
 	 */
 	
 	@RequestMapping(value = "/updateperson", method = RequestMethod.POST)
-	public String updatePerson(@RequestBody Person person)
+	public ResponseStatus updatePerson(@RequestBody Person person)
 	{
 		loger.info("update user");
 		if(person.getName().isEmpty() ) {
 			loger.info("user is empty");
-			return "Name is empty";
+			
+			return new ResponseStatus("Name is empty",404);
 		}
 		else
 		if(person.getSurname().isEmpty())
 		{
 			loger.info("sure name is empty");
-			return "sure Name is empty";
+			return new ResponseStatus("sure Name is empty",404);
 		}
 		
 		iPersonService.updatePerson(person);
 		
 		loger.info("User undated sucessfully");
-		return "update person Sucessfully";
+		return new ResponseStatus("update person Sucessfully",200);
+		
 	}
 	
 	/**
@@ -145,20 +158,23 @@ public class RestCrudController {
 	 */
 	
 	@RequestMapping(value = "/deleteperson/{id}", method = RequestMethod.DELETE)
-	public String getPersons(@PathVariable Long  id)
+	public ResponseStatus getPersons(@PathVariable Long  id)
 	{
 		Person person = iPersonService.getPersonById(id);
+		ResponseStatus responseStatus =new ResponseStatus("Person deleted sucessfull",200);
 		loger.info("person is deleted");
 		if(person!=null)
 		{
 			loger.info("person is not exist");
 			iPersonService.deletePerson(person);
-			return "Person deleted";
+			return responseStatus;
 		}
 		else
 		{
 			loger.info("person deleted sucessfully");
-			return "Person does not exist";
+			responseStatus.setCode(400);
+			responseStatus.setMessage("Person does not exist");
+			return responseStatus;
 		}
 
 	}
@@ -192,7 +208,7 @@ public class RestCrudController {
 	public Person getPersonById(@PathVariable Long  id)
 	{
 		Person person = iPersonService.getPersonById(id);
-		loger.info("person is deleted");
+		loger.info("get person by id");
 		return person;
 	}
 }

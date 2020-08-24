@@ -18,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fs.restcrud.entity.Person;
-import com.fs.restcrud.repositories.ContactRepository;
 import com.fs.restcrud.repositories.PersonRepository;
 
 /**
@@ -38,8 +37,6 @@ public class PersonServiceImp implements IPersonService{
 	@Autowired
 	private PersonRepository personRepository;
 	
-	@Autowired
-	private ContactRepository contactRepository;
 	
 	@Override
 	public void saveService(Person person) 
@@ -47,7 +44,10 @@ public class PersonServiceImp implements IPersonService{
 		loger.info("create new pserson"+person.toString());
 		person.setCreated(new Date());
 		personRepository.save(person);
-		person.getContacts().forEach(p->p.setPerson(person));
+		
+		if(person.getContacts()!=null)
+			person.getContacts().forEach(p->p.setParent(person));
+		
 		personRepository.save(person);
 		
 		
@@ -96,12 +96,11 @@ public class PersonServiceImp implements IPersonService{
 		loger.info("Update person "+person.getName());
 		Person dbperson = getPersonById(person.getId());
 		
-		//dbperson.setContacts(person.getContacts());
-		person.getContacts().forEach(
-				c->c.setPerson(dbperson));
-	
-		contactRepository.saveAll(person.getContacts());
+		dbperson.setContacts(person.getContacts());
 		
+		person.getContacts().forEach(
+				c->c.setParent(dbperson));
+			
 		dbperson.setName(person.getName());
 		dbperson.setSurname(person.getSurname());
 		dbperson.setAge(person.getAge());
